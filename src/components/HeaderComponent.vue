@@ -10,7 +10,7 @@
         <router-link to="/home" class="nav-link">Home page</router-link>
       </li>
       <li class="nav-item">
-        <router-link to="/cms" class="nav-link">Najcitanije</router-link>
+        <router-link to="/najcitanije" class="nav-link">Najcitanije</router-link>
       </li>
       <li class="nav-item" v-for="(category,index) in kategorije" :key="index">
         <router-link :to="{ path: '/category/' + category.ime }" class="nav-link">{{category.ime}}</router-link>

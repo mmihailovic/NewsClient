@@ -32,11 +32,13 @@ export default {
     name:"AllNews",
     data() {
         return {
+            naziv:'',
             newsList:[]
         }
     },
     created() {
-        this.$axios.get(`/api/news`, { headers: {'Access-Control-Allow-Origin': '*'}})
+        this.naziv = this.$route.params.kategorija;
+        this.$axios.get(`/api/news/category/` + this.naziv, { headers: {'Access-Control-Allow-Origin': '*'}})
         .then((response) => {
             this.newsList = response.data;
         });

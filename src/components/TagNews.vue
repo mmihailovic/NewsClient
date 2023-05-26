@@ -5,18 +5,15 @@
             <News :news="news"></News>
         </div>
         <pagination v-model="page" :records="newsList.length" :per-page="3" @paginate="onChangePage"></pagination>
-        <!-- <jw-pagination :items="newsList" @changePage="onChangePage"></jw-pagination> -->
-        <!-- <Pagination></Pagination> -->
     </div>
 </template>
 
 <script>
 import News from './News.vue';
-// import Pagination from './Pagination.vue'
 import Pagination from 'vue-pagination-2'
 
 export default {
-    name:"CategoryComponent",
+    name:"TagNews",
     components:{
         News,
         Pagination
@@ -30,28 +27,27 @@ export default {
         }
     },
     created() {
-        this.naziv = this.$route.params.category;
-        this.$axios.get(`/api/news/category/${this.naziv}`, { headers: {'Access-Control-Allow-Origin': '*'}})
+        this.naziv = this.$route.params.tag;
+        this.$axios.get(`/api/news/tag/${this.naziv}`, { headers: {'Access-Control-Allow-Origin': '*'}})
         .then((response) => {
             this.newsList = response.data;
         });
 
-        this.$axios.get(`/api/news/category/${this.naziv}/page/${this.page}`, { headers: {'Access-Control-Allow-Origin': '*'}})
+        this.$axios.get(`/api/news/tag/${this.naziv}/page/${this.page}`, { headers: {'Access-Control-Allow-Origin': '*'}})
       .then((response) => {
         // this.newsList = response.data;  
         this.showList = response.data
         console.log(response)
       });
   },watch: {
-    '$route.params.category': function(newCategory) {
-      this.page = 1
+    '$route.params.tag': function(newCategory) {
       this.naziv = newCategory;
-      this.$axios.get(`/api/news/category/${this.naziv}`, { headers: {'Access-Control-Allow-Origin': '*'}})
+      this.$axios.get(`/api/news/tag/${this.naziv}`, { headers: {'Access-Control-Allow-Origin': '*'}})
       .then((response) => {
         this.newsList = response.data;
       });
 
-      this.$axios.get(`/api/news/category/${this.naziv}/page/${this.page}`, { headers: {'Access-Control-Allow-Origin': '*'}})
+      this.$axios.get(`/api/news/tag/${this.naziv}/page/${this.page}`, { headers: {'Access-Control-Allow-Origin': '*'}})
       .then((response) => {
         // this.newsList = response.data;  
         this.showList = response.data
@@ -67,7 +63,7 @@ export default {
 
             this.page = pageOfItems;
             console.log(pageOfItems)
-            this.$axios.get(`/api/news/category/${this.naziv}/page/${this.page}`, { headers: {'Access-Control-Allow-Origin': '*'}})
+            this.$axios.get(`/api/news/tag/${this.naziv}/page/${this.page}`, { headers: {'Access-Control-Allow-Origin': '*'}})
       .then((response) => {
         // this.newsList = response.data;  
         this.showList = response.data
