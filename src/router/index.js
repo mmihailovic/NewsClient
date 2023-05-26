@@ -8,6 +8,7 @@ const routes = [
     path: '/',
     name: 'Home',
     component: () => import(/* webpackChunkName: "about" */ '../pages/HomePage.vue'),
+    props:true,
     children: [
       {
         path: 'home',
