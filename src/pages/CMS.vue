@@ -1,9 +1,16 @@
 <template>
-    <h1>CMS</h1>
+    <div>
+        <CMSHeader></CMSHeader>
+        <router-view></router-view>
+    </div>
 </template>
 
 <script>
+import CMSHeader from '@/components/CMSHeader.vue';
+
 export default {
-    name:"CMSPage"
+    name:"CMSPage",
+    components:{CMSHeader}
+
 }
 </script>
