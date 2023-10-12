@@ -15,7 +15,7 @@
           </tr>
           </thead>
           <tbody>
-          <tr v-for="(news,index) in newsList" :key="index">
+          <tr v-for="(news,index) in showList" :key="index">
             <td @click="otvoriNoviTab(news.id)">{{ news.title }}</td>
             <td>{{ news.author }}</td>
             <td>{{ formatDate(news.date) }}</td>
@@ -24,15 +24,20 @@
           </tr>
           </tbody>
         </table>
+        <pagination v-model="page" :records="newsList.length" :per-page="3" @paginate="onChangePage"></pagination>
     </div>
 </template>
 
 <script>
+import Pagination from 'vue-pagination-2'
 export default {
     name:"AllNews",
+    components:{Pagination},
     data() {
         return {
-            newsList:[]
+            newsList:[],
+            page:1,
+            showList:[]
         }
     },
     created() {
@@ -40,6 +45,13 @@ export default {
         .then((response) => {
             this.newsList = response.data;
         });
+
+        this.$axios.get(`/api/news/page/${this.page}`, { headers: {'Access-Control-Allow-Origin': '*'}})
+      .then((response) => {
+        // this.newsList = response.data;  
+        this.showList = response.data
+        console.log(response)
+      });
     },
     methods: {
         otvoriNoviTab(id) {
@@ -61,6 +73,19 @@ export default {
         editNews(selectedNews) {
             console.log(selectedNews)
             this.$router.push({path:'/cms/vesti/edit',query: { news: JSON.stringify(selectedNews)}});
+        },
+        onChangePage(pageOfItems) {
+            // update page of items
+
+            this.page = pageOfItems;
+            console.log(pageOfItems)
+            this.$axios.get(`/api/news/page/${this.page}`, { headers: {'Access-Control-Allow-Origin': '*'}})
+      .then((response) => {
+        // this.newsList = response.data;  
+        this.showList = response.data
+        console.log(response)
+      });
+            console.log(this.page)
         }
     }
 }

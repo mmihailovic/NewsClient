@@ -67,8 +67,6 @@ export default {
         this.comments = response.data;
         console.log(response.data)
     });
-
-    this.$axios.put(`/api/news/${this.id}`, { headers: {'Access-Control-Allow-Origin': '*'}});
   },
   methods: {
     postComment() {

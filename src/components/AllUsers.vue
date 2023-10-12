@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <h1>All news</h1>
+        <h1>All users</h1>
 
         <button class="btn btn-primary" @click="openForm">Create user</button>
 
@@ -16,7 +16,7 @@
           </tr>
           </thead>
           <tbody>
-          <tr v-for="(user,index) in usersList" :key="index">
+          <tr v-for="(user,index) in showList" :key="index">
             <td>{{ user.ime }}</td>
             <td>{{ user.prezime }}</td>
             <td>{{ user.email }}</td>
@@ -29,39 +29,61 @@
           </tr>
           </tbody>
         </table>
+        <pagination v-model="page" :records="usersList.length" :per-page="3" @paginate="onChangePage"></pagination>
     </div>
 </template>
 
 <script>
+import Pagination from 'vue-pagination-2'
 export default {
     name:"AllNews",
+    components:{Pagination},
     data() {
         return {
-            usersList:[]
+            usersList:[],
+            showList:[],
+            page:1
         }
     },
     created() {
         this.$axios.get(`/api/users`, { headers: {'Access-Control-Allow-Origin': '*'}})
-        .then((response) => {
-            this.usersList = response.data;
-        });
+          .then((response) => {
+              this.usersList = response.data;
+          });
+
+        this.$axios.get(`/api/users/page/${this.page}`, { headers: {'Access-Control-Allow-Origin': '*'}})
+          .then((response) => {
+            this.showList = response.data
+          });
     },
     methods: {
         openForm() {
             this.$router.push('/cms/korisnici/add');
         },
         editNews(selectedNews) {
-            console.log(selectedNews)
             this.$router.push({path:'/cms/korisnici/edit',query: { korisnik: JSON.stringify(selectedNews)}});
         },
         setStatus(user) {
             this.$axios.post(`/api/users/status`, {username:user.email, aktivan: !user.aktivan},{ headers: {'Access-Control-Allow-Origin': '*'}})
-            .then(() => {
-                this.$axios.get(`/api/users`, { headers: {'Access-Control-Allow-Origin': '*'}})
-                .then((response) => {
-                    this.usersList = response.data;
-                });
-            });
+              .then(() => {
+                  this.$axios.get(`/api/users`, { headers: {'Access-Control-Allow-Origin': '*'}})
+                    .then((response) => {
+                        this.usersList = response.data;
+                    });
+
+                  this.$axios.get(`/api/users/page/${this.page}`, { headers: {'Access-Control-Allow-Origin': '*'}})
+                    .then((response) => {
+                      this.showList = response.data
+                    });
+              });
+        },
+        onChangePage(pageOfItems) {
+            // update page of items
+            this.page = pageOfItems;
+            this.$axios.get(`/api/users/page/${this.page}`, { headers: {'Access-Control-Allow-Origin': '*'}})
+              .then((response) => {
+                this.showList = response.data
+              });
         }
     }
 }
